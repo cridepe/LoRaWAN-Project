@@ -96,26 +96,6 @@ static uint8_t get_battery_level();
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-// Continua la stringa completa qui
-/*
-void send_string_in_packets(const char* str, uint16_t packet_size) {
-	uint32_t len = strlen(str);
-	uint32_t offset = 0;
-
-	while (offset < len) {
-    	uint16_t remaining = len - offset;
-    	uint16_t current_packet_size = (remaining < packet_size) ? remaining : packet_size;
-
-    	rfm95_status = rfm95_send_receive_cycle(&rfm95_handle, (uint8_t*)(str + offset), current_packet_size, false); //invio messaggio di movimento rilevato
-    			  // process status response:
-    	handle_rfm95_status(rfm95_status); //ricezione risposta del modulo
-    	offset += current_packet_size;
-
-    	HAL_Delay(5000);  // Delay opzionale per evitare saturazione buffer
-	}
-}
-*/
-
 void send_array_in_packets(const uint8_t *input_array, size_t array_length, size_t packet_length)
 {
 	size_t offset = 0; //offset per tenere traccia ei dati già trasmessi
@@ -280,39 +260,9 @@ int main(void)
 
   while (1)
   {
-
-	  //if(uplink == true){ //controllo se il bottone è stato premuto
-
-	  /*
-	  rfm95_status = rfm95_send_receive_cycle(&rfm95_handle, tx_buffer1, sizeof(tx_buffer1), false); //invio messaggio di movimento rilevato
-		  // process status response:
-      handle_rfm95_status(rfm95_status); //ricezione risposta del modulo
-
-	  printf("\r\n\n");
-
-	  HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
-
-
-	  printf("Sleep\r\n");
-	  //precision_sleep_until(get_precision_tick() + lse_clk*10);
-	  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);         // Pulisci i flag di wakeup
-	  //HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);  // Abilita PA0 come wake-up
-
-	  HAL_SuspendTick();
-	  HAL_PWREx_EnterSTOP2Mode(PWR_STOPENTRY_WFI);
-	  SystemClock_Config();
-	  HAL_ResumeTick();
-
-	  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-	  //HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFE); //sleep mode (da implementare)
-*/
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-
 
   }
   /* USER CODE END 3 */
