@@ -1,0 +1,141 @@
+[
+    {
+        "id": "e703d8df8ad3c424",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ee540ecd6d766abf",
+        "type": "mqtt in",
+        "z": "e703d8df8ad3c424",
+        "name": "",
+        "topic": "v3/rfm9xlorawan@ttn/devices/+/up",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "18f8c829a7bfe596",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 440,
+        "wires": [
+            [
+                "165659517fb4a337"
+            ]
+        ]
+    },
+    {
+        "id": "165659517fb4a337",
+        "type": "function",
+        "z": "e703d8df8ad3c424",
+        "name": "Unisci stringhe",
+        "func": "// Controlla che la struttura dei dati in ingresso sia corretta\nif (\n    msg.payload['uplink_message'] &&\n    msg.payload['uplink_message']['decoded_payload'] &&\n    msg.payload['uplink_message']['decoded_payload']['hexString']\n) {\n    // Inizializza un array per raccogliere le stringhe esadecimali\n    if (!context.hexStrings) {\n        context.hexStrings = [];\n    }\n\n    // Estrai la stringa esadecimale\n    let hexString = msg.payload['uplink_message']['decoded_payload']['hexString'];\n\n    // Aggiungi la stringa esadecimale alla lista\n    context.hexStrings.push(hexString);\n\n    // Verifica se sono arrivate almeno 3 stringhe\n    if (context.hexStrings.length >= 33) {\n        // Scarta le prime due stringhe e unisci il resto\n        let combinedHex = context.hexStrings.slice(2).join('');\n\n        // Converte la stringa esadecimale unita in un buffer\n        let buffer = Buffer.from(combinedHex, 'hex');\n\n        // Converte il buffer in Base64\n        let base64String = buffer.toString('base64');\n\n        // Crea un messaggio HTML per l'immagine Base64\n        msg.payload = {\n            image: `data:image/png;base64,${base64String}`\n        };\n\n        // Resetta l'array delle stringhe per il prossimo ciclo\n        context.hexStrings = [];\n\n        // Invia il messaggio al nodo ui_template\n        return msg;\n    } else {\n        // Se non sono arrivate ancora abbastanza stringhe, non fare nulla\n        return null;\n    }\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 440,
+        "wires": [
+            [
+                "bd600d7338ba6305",
+                "7be0791acb283c86"
+            ]
+        ]
+    },
+    {
+        "id": "bd600d7338ba6305",
+        "type": "ui_template",
+        "z": "e703d8df8ad3c424",
+        "group": "d4fe94c48580bd7a",
+        "name": "immagine ricevuta 1",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "format": "<div style=\"text-align:center;\">\n    <img src=\"{{msg.payload.image}}\" alt=\"Immagine\" large=\"1000%\" width=\"300\" />\n</div>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 840,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7be0791acb283c86",
+        "type": "debug",
+        "z": "e703d8df8ad3c424",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 800,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "18f8c829a7bfe596",
+        "type": "mqtt-broker",
+        "name": "Prova",
+        "broker": "eu1.cloud.thethings.network",
+        "port": "1883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "3",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d4fe94c48580bd7a",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "9879b152908ce7e2",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "9879b152908ce7e2",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
