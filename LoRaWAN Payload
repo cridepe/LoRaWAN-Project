@@ -1,0 +1,15 @@
+function decodeUplink(input) {
+  // I byte ricevuti rappresentano il messaggio esadecimale
+  let messageContent = input.bytes; // Iniziamo dal primo byte (senza fare slice)
+ 
+  // Convertiamo i byte in una stringa esadecimale
+  let hexString = messageContent.map(byte => byte.toString(16).padStart(2, '0')).join('');
+ 
+  // Se vuoi una stringa leggibile, puoi convertire ogni coppia di caratteri esadecimali in un caratter
+  return {
+	data: {
+  	hexString: hexString,  // Mostra anche la stringa esadecimale
+	}
+  };
+}
+
