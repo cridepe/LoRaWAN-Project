@@ -8,3 +8,9 @@ Le parti che verranno trattate in questo progetto sono:
 - Invio dei paccheti su server TTN;
 - Ricezione dei pacchetti da TTN su Node-RED;
 - Unione dei pacchetti su Node-RED, conversione in base64 e stampa della foto su dashboard.
+
+## Programmazione su STM32CubeIDE
+
+## Realizzazione Hardware
+
+## Test
