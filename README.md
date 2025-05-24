@@ -18,10 +18,13 @@ Per scrivere i codici sono state usate varie nucleo tra cui la Nucleo-L476 e la 
 Come prima cosa ci siamo occupati di implementare la parte relativa all'invio dei pacchetti con LoRaWAN.
 Per fare ciò abbiamo utilizzato un modulo rfm95 con la libreria rfm95.c, e abbiamo impostato la Nucleo-L476 come segue:
 
-|GPIO|
-| Colonna 1 | Colonna 2 | Colonna 3 |
-|-----------|-----------|-----------|
-| Riga 1    | Dato A    | Dato B    |
-| Riga 2    | Dato C    | Dato D    |
+
+| Pin Name | GPIO Output | GPIO Mode | GPIO Pull-Up/Pull-Down | Maximum Output Speed | User Label |
+|----------|-------------|-----------|------------------------|----------------------|------------|
+| PB0    | HIGH    | Output Push Pull     | Pull-Up | LOW | CS |
+| PB1    | HIGH    | Output Open Drain     | No Pull-Up and no Pull-Down | LOW | RST |
+| PA7    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO0 |
+| PA6    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO1 |
+| PA5    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO5 |
 
 
