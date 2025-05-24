@@ -11,6 +11,12 @@ Le parti che verranno trattate in questo progetto sono:
 
 ## Programmazione su STM32CubeIDE
 
-## Realizzazione Hardware
+Per scrivere i codici sono state usate varie nucleo tra cui la Nucleo-L476 e la Nucleo-F207, l'ideale sarebbe di utilizzare la Nucleo-F407 per realizzare il programma finale.
 
-## Test
+### Invio Pacchetti con LoRaWAN
+
+Come prima cosa ci siamo occupati di implementare la parte relativa all'invio dei pacchetti con LoRaWAN.
+Per fare ciò abbiamo utilizzato un modulo rfm95 con la libreria rfm95.c, e abbiamo impostato la Nucleo-L476 come segue:
+
+/ciao/come stai/
+
