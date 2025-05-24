@@ -34,6 +34,8 @@ USART2: Asynchronous;
 RNG: Activated.
 
 ![immagine](https://github.com/user-attachments/assets/7bf237f8-3d66-470c-89d4-9a5ad027fba0)
+![immagine](https://github.com/user-attachments/assets/2b76b665-c9c8-465f-93d9-413c61e80ac9)
+
 
 
 
