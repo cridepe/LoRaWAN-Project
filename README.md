@@ -49,6 +49,7 @@ Dopo di che, modifichiamo il payload in modo da riucire a salvare i dati esadeci
 
 ### Configurazione Node-RED
 
+Node-RED ci servirà per ricevere i pacchetti di dati che arrivano su TTN, unirli assieme e stampare sulla dashboard la foto ricostruita. Ci basterà importare il file Node-RED FLow.
 
 
 
