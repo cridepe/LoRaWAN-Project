@@ -21,8 +21,8 @@ Per fare ciò abbiamo utilizzato un modulo rfm95 con la libreria rfm95.c, e abbi
 
 | Pin Name | GPIO Output | GPIO Mode | GPIO Pull-Up/Pull-Down | Maximum Output Speed | User Label |
 |----------|-------------|-----------|------------------------|----------------------|------------|
-| PB0    | HIGH    | Output Push Pull     | Pull-Up | LOW | CS |
-| PB1    | HIGH    | Output Open Drain     | No Pull-Up and no Pull-Down | LOW | RST |
+| PB0    | High    | Output Push Pull     | Pull-Up | Low | CS |
+| PB1    | High    | Output Open Drain     | No Pull-Up and no Pull-Down | Low | RST |
 | PA7    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO0 |
 | PA6    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO1 |
 | PA5    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO5 |
