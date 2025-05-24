@@ -38,6 +38,17 @@ Per fare ciò abbiamo utilizzato un modulo rfm95 con la libreria rfm95.c, e abbi
 
 ### Configurazione TTN
 
+Il server TTN ci servirà per leggere i dati che vengono inviati tramite LoRaWAN. 
+Dopo averlo configuaro come segue: 
+
+![immagine](https://github.com/user-attachments/assets/2cfe8892-9ee5-48cd-b9a8-915738db4afd)
+![immagine](https://github.com/user-attachments/assets/900a1600-ddfa-4530-be6b-e6d340542a00)
+
+Ne ricaviamo il DeviceAdress, la NwkSKey e l'AppSKey che ci serviranno nel codice per stabilire una connessione con il server.
+Dopo di che, modifichiamo il payload in modo da riucire a salvare i dati esadecimali in una variabile che ci servirà poi su Node-RED.
+
+
+
 
 
 
