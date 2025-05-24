@@ -27,16 +27,16 @@ Per fare ciò abbiamo utilizzato un modulo rfm95 con la libreria rfm95.c, e abbi
 | PA6    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO1 |
 | PA5    | n/a    | External Interrupt     | No Pull-Up and no Pull-Down | n/a | DIO5 |
 
-LPTMI: Counts Internal CLock Events;
-RTC: Activate Clock Sources;
-SPI2: Full-Duplex Master, Maximum Output Speed -> High;
-USART2: Asynchronous;
-RNG: Activated.
+- LPTMI: Counts Internal CLock Events;
+- RTC: Activate Clock Sources;
+- SPI2: Full-Duplex Master, Maximum Output Speed -> High;
+- USART2: Asynchronous;
+- RNG: Activated.
 
 ![immagine](https://github.com/user-attachments/assets/7bf237f8-3d66-470c-89d4-9a5ad027fba0)
 ![immagine](https://github.com/user-attachments/assets/42940b34-432f-4670-8935-b13663c42931)
 
-### Scatto Foto OV2640
+### Configurazione TTN
 
 
 
