@@ -36,6 +36,9 @@ RNG: Activated.
 ![immagine](https://github.com/user-attachments/assets/7bf237f8-3d66-470c-89d4-9a5ad027fba0)
 ![immagine](https://github.com/user-attachments/assets/42940b34-432f-4670-8935-b13663c42931)
 
+### Scatto Foto OV2640
+
+
 
 
 
