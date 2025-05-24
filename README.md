@@ -47,6 +47,8 @@ Dopo averlo configuaro come segue:
 Ne ricaviamo il DeviceAdress, la NwkSKey e l'AppSKey che ci serviranno nel codice per stabilire una connessione con il server.
 Dopo di che, modifichiamo il payload in modo da riucire a salvare i dati esadecimali in una variabile che ci servirà poi su Node-RED.
 
+### Configurazione Node-RED
+
 
 
 
