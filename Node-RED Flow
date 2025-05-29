@@ -8,7 +8,7 @@
         "env": []
     },
     {
-        "id": "ee540ecd6d766abf",
+        "id": "64c562e50cc71d7c",
         "type": "mqtt in",
         "z": "e703d8df8ad3c424",
         "name": "",
@@ -20,37 +20,36 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 160,
-        "y": 440,
+        "x": 180,
+        "y": 180,
         "wires": [
             [
-                "165659517fb4a337"
+                "24dafde402c1c167"
             ]
         ]
     },
     {
-        "id": "165659517fb4a337",
+        "id": "24dafde402c1c167",
         "type": "function",
         "z": "e703d8df8ad3c424",
         "name": "Unisci stringhe",
-        "func": "// Controlla che la struttura dei dati in ingresso sia corretta\nif (\n    msg.payload['uplink_message'] &&\n    msg.payload['uplink_message']['decoded_payload'] &&\n    msg.payload['uplink_message']['decoded_payload']['hexString']\n) {\n    // Inizializza un array per raccogliere le stringhe esadecimali\n    if (!context.hexStrings) {\n        context.hexStrings = [];\n    }\n\n    // Estrai la stringa esadecimale\n    let hexString = msg.payload['uplink_message']['decoded_payload']['hexString'];\n\n    // Aggiungi la stringa esadecimale alla lista\n    context.hexStrings.push(hexString);\n\n    // Verifica se sono arrivate almeno 3 stringhe\n    if (context.hexStrings.length >= 33) {\n        // Scarta le prime due stringhe e unisci il resto\n        let combinedHex = context.hexStrings.slice(2).join('');\n\n        // Converte la stringa esadecimale unita in un buffer\n        let buffer = Buffer.from(combinedHex, 'hex');\n\n        // Converte il buffer in Base64\n        let base64String = buffer.toString('base64');\n\n        // Crea un messaggio HTML per l'immagine Base64\n        msg.payload = {\n            image: `data:image/png;base64,${base64String}`\n        };\n\n        // Resetta l'array delle stringhe per il prossimo ciclo\n        context.hexStrings = [];\n\n        // Invia il messaggio al nodo ui_template\n        return msg;\n    } else {\n        // Se non sono arrivate ancora abbastanza stringhe, non fare nulla\n        return null;\n    }\n}\n",
+        "func": "if (\n    msg.payload['uplink_message'] &&\n    msg.payload['uplink_message']['decoded_payload'] &&\n    msg.payload['uplink_message']['decoded_payload']['hexString']\n) {\n    // Inizializza un array per raccogliere le stringhe esadecimali\n    if (!context.hexStrings) {\n        context.hexStrings = [];\n    }\n\n    // Inizializza la variabile per la stringa precedente\n    if (!context.previousHexString) {\n        context.previousHexString = '';\n    }\n\n    // Estrai la stringa esadecimale\n    let hexString = msg.payload['uplink_message']['decoded_payload']['hexString'];\n\n    // Controlla se la nuova stringa è diversa da quella precedente\n    if (hexString !== context.previousHexString) {\n        // Aggiungi la nuova stringa esadecimale alla lista\n        context.hexStrings.push(hexString);\n\n        // Aggiorna la stringa precedente\n        context.previousHexString = hexString;\n    }\n\n    // Unisci tutte le stringhe esadecimali\n    let combinedHex = context.hexStrings.join('').toLowerCase();\n\n    // Controlla se la stringa termina con \"ffd9\"\n    if (combinedHex.slice(-4) === 'ffd9') {\n        // Trova la posizione della prima occorrenza di \"ffd8\"\n        let index = combinedHex.indexOf('ffd8');\n\n        if (index !== -1) {\n            // Estrai dalla prima \"ffd8\" fino alla fine\n            let slicedHex = combinedHex.slice(index);\n\n            try {\n                // Converte la stringa esadecimale estratta in un buffer\n                let buffer = Buffer.from(slicedHex, 'hex');\n\n                // Converte il buffer in Base64\n                let base64String = buffer.toString('base64');\n\n                // Crea un messaggio HTML per l'immagine Base64\n                msg.payload = {\n                    image: `data:image/jpeg;base64,${base64String}`\n                };\n\n                // Resetta l'array delle stringhe per il prossimo ciclo\n                context.hexStrings = [];\n                context.previousHexString = '';\n\n                // Invia il messaggio al nodo ui_template\n                return msg;\n            } catch (e) {\n                node.error(\"Errore nella conversione del buffer: \" + e.message);\n                return null;\n            }\n        } else {\n            node.warn('Sequenza \"ffd8\" non trovata nella stringa combinata.');\n            return null;\n        }\n    } else {\n        // Se l'immagine non è ancora completa, non fare nulla\n        return null;\n    }\n}\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 440,
+        "x": 540,
+        "y": 180,
         "wires": [
             [
-                "bd600d7338ba6305",
-                "7be0791acb283c86"
+                "ecd5237ced0ca9ab"
             ]
         ]
     },
     {
-        "id": "bd600d7338ba6305",
+        "id": "ecd5237ced0ca9ab",
         "type": "ui_template",
         "z": "e703d8df8ad3c424",
         "group": "d4fe94c48580bd7a",
@@ -64,28 +63,11 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 840,
-        "y": 440,
+        "x": 860,
+        "y": 180,
         "wires": [
             []
         ]
-    },
-    {
-        "id": "7be0791acb283c86",
-        "type": "debug",
-        "z": "e703d8df8ad3c424",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 800,
-        "y": 360,
-        "wires": []
     },
     {
         "id": "18f8c829a7bfe596",
