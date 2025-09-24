@@ -63,7 +63,7 @@ UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart3_tx;
 
 /* USER CODE BEGIN PV */
-#define PACKET_SIZE 220 // Puoi cambiare la dimensione del pacchetto
+#define PACKET_SIZE 220 //Puoi cambiare la dimensione del pacchetto
 bool uplink = false;  //booleano controllo trasmissione
 
 rfm95_handle_t rfm95_handle = {0};    // This structure will be used to manage all the configurations for the RFM
@@ -76,7 +76,7 @@ volatile uint8_t EnterSleepFlag = 0;
 uint8_t packet[PACKET_SIZE];
 size_t current_packet_size;
 
-	//DEF ADRESS
+//DEF ADRESS
 uint8_t dev_addr[4] ={0x26, 0x0B, 0xD3, 0xA5};
 uint8_t nw_session_keys[16] = {0x17, 0x59, 0x12, 0x74, 0x6F, 0xC2, 0x17, 0x6A, 0x0A, 0xFD, 0xAC, 0x46, 0xDF, 0x4C, 0xFF, 0x6D};
 uint8_t app_session_keys[16] = {0xD7, 0x6E, 0xFD, 0xC3, 0x05, 0xDA, 0xB4, 0x00, 0xDF, 0x4B, 0xE2, 0xBD, 0xD2, 0x90, 0x7D, 0xE7};
@@ -124,7 +124,6 @@ uint8_t frameBuffer[RES_1280x960] = { 0 };
 #endif
 */
 
-
 uint16_t bufferPointer = 0;
 short headerFound = 0;
 /* USER CODE END PV */
@@ -167,21 +166,14 @@ void my_printf(const char *fmt, ...) // custom printf() function
 	va_end(argp);
 }
 
+//Funzione per dividere l'array di dati della foto in pacchetti e inviarli
 void send_array_in_packets(const uint8_t *input_array, size_t array_length, size_t packet_length)
 {
 	size_t offset = 0; //offset per tenere traccia ei dati già trasmessi
 	uint8_t t = 0; //conteggio pacchetti inviati
-	rfm95_status = rfm95_send_receive_cycle(&rfm95_handle, "", 1, false);
- 	handle_rfm95_status(rfm95_status); //ricezione risposta del modulo
-
- 	rfm95_status = rfm95_send_receive_cycle(&rfm95_handle, "", 1, false);
- 	handle_rfm95_status(rfm95_status);
-
- 	HAL_Delay(10000);
 
 	while (offset < array_length)
 	{
-
     	size_t bytes_remaining = array_length - offset; //byte rimanenti
     	current_packet_size = (bytes_remaining < packet_length) ? bytes_remaining : packet_length;  //calcolo lunghezza del pacchetto attuale
     	memset(packet, 0, current_packet_size);  // Pulizia buffer (opzionale)
@@ -191,7 +183,7 @@ void send_array_in_packets(const uint8_t *input_array, size_t array_length, size
 
     	handle_rfm95_status(rfm95_status);
     	printf("%.i\n\r", t++); //numero pacchetto
-    	HAL_Delay(5000);
+    	HAL_Delay(36521); //delay calcolato sulla base di pacchetti da 220 byte e SF7
 	}
 }
 /* USER CODE END 0 */
@@ -234,10 +226,7 @@ int main(void)
   MX_RTC_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
-
   HAL_LPTIM_Counter_Start_IT(&hlptim1, 0xFFFF); // start in modalità interrupt
-
   HAL_Delay(1000);
 
   /**************************************************
@@ -246,150 +235,120 @@ int main(void)
   *       IMPOSTAZIONI MODULO LoRa:
   *
   **************************************************
-  **************************************************
-  */
+  ***************************************************/
 
+  // SET HARDWARE CONNECTIONS:
+  rfm95_handle.spi_handle = &hspi1;
+  rfm95_handle.nss_port   = NSS_GPIO_Port;
+  rfm95_handle.nss_pin    = NSS_Pin;
+  rfm95_handle.nrst_port  = RESET_RFM95_GPIO_Port;
+  rfm95_handle.nrst_pin   = RESET_RFM95_Pin;
 
-    // SET HARDWARE CONNECTIONS:
-    rfm95_handle.spi_handle = &hspi1;
-    rfm95_handle.nss_port   = NSS_GPIO_Port;
-    rfm95_handle.nss_pin    = NSS_Pin;
-    rfm95_handle.nrst_port  = RESET_RFM95_GPIO_Port;
-    rfm95_handle.nrst_pin   = RESET_RFM95_Pin;
+  // SET TX POWER, SF, RX2-SF:
+  rfm95_handle.config.tx_sf = 7;
+  rfm95_handle.config.tx_power = 14;
+  rfm95_handle.config.rx2_sf = 9;
 
-    // SET TX POWER, SF, RX2-SF:
-    rfm95_handle.config.tx_sf = 7;
-    rfm95_handle.config.tx_power = 14;
-    rfm95_handle.config.rx2_sf = 9;
+  // Set application data magic word:
+  rfm95_handle.config.lora_magic = 0xABCD;
+  // INIT FIELDS FOR RX MODE:
+  rfm95_handle.precision_tick_frequency = lse_clk;
+  rfm95_handle.precision_tick_drift_ns_per_s = 20000;
+  rfm95_handle.receive_mode = RFM95_RECEIVE_MODE_RX12;
 
-    // Set application data magic word:
-    rfm95_handle.config.lora_magic = 0xABCD;
-    // INIT FIELDS FOR RX MODE:
-    rfm95_handle.precision_tick_frequency = lse_clk;
-    rfm95_handle.precision_tick_drift_ns_per_s = 20000;
-    rfm95_handle.receive_mode = RFM95_RECEIVE_MODE_RX12;
+  rfm95_handle.get_precision_tick = get_precision_tick;
+  rfm95_handle.precision_sleep_until = precision_sleep_until;
+  rfm95_handle.random_int = random_int;
+  rfm95_handle.get_battery_level = get_battery_level;
 
+  // SETUP device address, network and application session keys:  impostazione chiavi device
+  memcpy(rfm95_handle.device_address, dev_addr, sizeof(dev_addr));
+  memcpy(rfm95_handle.network_session_key, nw_session_keys, sizeof(nw_session_keys));
+  memcpy(rfm95_handle.application_session_key, app_session_keys, sizeof(app_session_keys));
 
-    rfm95_handle.get_precision_tick = get_precision_tick;
-    rfm95_handle.precision_sleep_until = precision_sleep_until;
-    rfm95_handle.random_int = random_int;
-    rfm95_handle.get_battery_level = get_battery_level;
-
-
-
-    // SETUP device address, network and application session keys:  impostazione chiavi device
-    memcpy(rfm95_handle.device_address, dev_addr, sizeof(dev_addr));
-    memcpy(rfm95_handle.network_session_key, nw_session_keys, sizeof(nw_session_keys));
-    memcpy(rfm95_handle.application_session_key, app_session_keys, sizeof(app_session_keys));
-
-    rfm95_status = rfm95_init(&rfm95_handle); //controllo inizializzazione modulo LoRa
-    printf("Connesso\r\n");
-    // Initialise RFM95 module.
-    if ((rfm95_status & RFM95_STATUS_OK) == 0) {
+  rfm95_status = rfm95_init(&rfm95_handle); //controllo inizializzazione modulo LoRa
+  printf("Connesso\r\n");
+  // Initialise RFM95 module.
+  if ((rfm95_status & RFM95_STATUS_OK) == 0) {
       printf("RFM95 init failed\r\n");
       while(1);
-    }
+  }
 
-    /* EXTI interrupt init*/
-    HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
+  /**************************************************
+  **************************************************
+  *
+  *       OV2640:
+  *
+  **************************************************
+  *************************************************/
 
-    /**************************************************
-    **************************************************
-    *
-    *       OV2640:
-    *
-    **************************************************
-    *************************************************/
-
-  	OV2640_Init(&hi2c2, &hdcmi);
-  	HAL_Delay(10);
-  	OV2640_ResolutionOptions(imgRes);
-  	HAL_Delay(10);
+  OV2640_Init(&hi2c2, &hdcmi);
+  HAL_Delay(10);
+  OV2640_ResolutionOptions(imgRes);
+  HAL_Delay(10);
 
   #ifdef DEBUG
   	my_printf("Finishing configuration \r\n");
   #endif
 
-  	/**************************************************
-  	 **************************************************
-  	 *
-  	 *       STANDBY MODE:
-  	 *
-  	 **************************************************
-  	 *************************************************/
+  //DEFINIZIONE VARIABILI PER LA STANDBY MODE
+  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+  HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 
-  		if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
-  		   {
-  		 	  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);  // clear the flag
-  		 	  /** Disable the WWAKEUP PIN **/
-  		 	  HAL_PWR_DisableWakeUpPin(PWR_WAKEUP_PIN1);  // disable PA0
-  		 	  /** Deactivate the RTC wakeup  **/
-  		 	  HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
-  		   }
-  		/** Now enter the standby mode
-  		 * **/
-  		/* Clear the WU FLAG */
-  		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-  		/* clear the RTC Wake UP (WU) flag */
-  		__HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(&hrtc, RTC_FLAG_WUTF);
-  	    /* Enable the WAKEUP PIN */
-  	    HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+  HAL_Delay(5000);
 
-  	    HAL_Delay(5000);
+  memset(frameBuffer, 0, sizeof frameBuffer);
+  OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes);
 
-  	    memset(frameBuffer, 0, sizeof frameBuffer);
-  	    OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes);
-
-  	  while (1) {
-  	      	if (headerFound == 0 && frameBuffer[bufferPointer] == 0xFF
-  	      		&& frameBuffer[bufferPointer + 1] == 0xD8) {
-  	      			headerFound = 1;
+  //Una volta scattata la foto e salvato l'array di dati nel frameBuffer, si cerca l'inizio e la fine della foto in modo da
+  //sapere la grandezza dell'immagine
+  while (1) {
+      	if (headerFound == 0 && frameBuffer[bufferPointer] == 0xFF
+        		&& frameBuffer[bufferPointer + 1] == 0xD8) {
+  	     			headerFound = 1;
   	      			#ifdef DEBUG
-  	        					my_printf("Found header of JPEG file \r\n");
+  	        			my_printf("Found header of JPEG file \r\n");
   	      			#endif
-  	      	}
-  	      	if (headerFound == 1 && frameBuffer[bufferPointer] == 0xFF
-  	      		&& frameBuffer[bufferPointer + 1] == 0xD9) {
-  	      		bufferPointer = bufferPointer + 2;
-  	      			#ifdef DEBUG
-  	        					my_printf("Found EOF of JPEG file \r\n");
-  	      			#endif
-  	      			headerFound = 0;
-  	      			break;
-  	      	}
+  	   	}
+  	   	if (headerFound == 1 && frameBuffer[bufferPointer] == 0xFF && frameBuffer[bufferPointer + 1] == 0xD9) 
+		{
+  	    	bufferPointer = bufferPointer + 2;
+  	    		#ifdef DEBUG
+  	    			my_printf("Found EOF of JPEG file \r\n");
+  	    		#endif
+  	    		headerFound = 0;
+  	    		break;
+  	    }
+ 	    if (bufferPointer >= 65535) {
+  	    	break;
+  	    }
+  	    bufferPointer++;
+  }
+  #ifdef DEBUG
+  	  my_printf("Image size: %d bytes \r\n", bufferPointer);
+  	  my_printf("Image data (hex):\r\n");
+	  //convertiamo i dati dell'array in esadecimale
+  	  for (int i = 0; i < bufferPointer; i++) 
+	  {
+  	  	  my_printf("%02X ", frameBuffer[i]);
+  	  }
+  	  my_printf("\r\n");
+  #endif
 
-  	      	if (bufferPointer >= 65535) {
-  	      			break;
-  	      	}
-
-  	      	bufferPointer++;
-  	      }
-  	      #ifdef DEBUG
-  	        		  my_printf("Image size: %d bytes \r\n", bufferPointer);
-  	        		  my_printf("Image data (hex):\r\n");
-  	        		  for (int i = 0; i < bufferPointer; i++) {
-  	        			  my_printf("%02X ", frameBuffer[i]);
-  	        		  }
-  	        		  my_printf("\r\n");
-  	      #endif
-
-
-			//HAL_UART_Transmit_DMA(&huart3, frameBuffer, bufferPointer); //Use of DMA may be necessary for larger data streams.
-			send_array_in_packets(frameBuffer, sizeof(frameBuffer), PACKET_SIZE);
-
-			send_array_in_packets(frameBuffer, bufferPointer, PACKET_SIZE);
-
-			printf("About to enter the STANDBY MODE\r\n");
-			printf("STANDBY MODE\r\n");
-			HAL_PWR_EnterSTANDBYMode();
-
-
-
+  //HAL_UART_Transmit_DMA(&huart3, frameBuffer, bufferPointer); //Use of DMA may be necessary for larger data streams.
+  send_array_in_packets(frameBuffer, sizeof(frameBuffer), PACKET_SIZE);
+  send_array_in_packets(frameBuffer, bufferPointer, PACKET_SIZE);
+  printf("About to enter the STANDBY MODE\r\n");
+  printf("STANDBY MODE\r\n");
+  HAL_PWR_EnterSTANDBYMode();
 
   /* USER CODE END 2 */
 
@@ -1013,10 +972,6 @@ void handle_rfm95_status(uint16_t rfm95_status) {  //lista delle possibili rispo
  **************************************************
  **************************************************
  */
-
-
-
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){  //gestione interrupt di modulo e bottone
   if (GPIO_Pin == DIO0_Pin) {
     rfm95_on_interrupt(&rfm95_handle, RFM95_INTERRUPT_DIO0);
@@ -1071,3 +1026,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
