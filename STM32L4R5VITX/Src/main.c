@@ -263,7 +263,7 @@ int main(void)
 
   rfm95_status = rfm95_init(&rfm95_handle); //controllo inizializzazione modulo LoRa
   printf("Connesso\r\n");
-  // Initialise RFM95 module.
+  // Initialize RFM95 module.
   if ((rfm95_status & RFM95_STATUS_OK) == 0) {
       printf("RFM95 init failed\r\n");
       while(1);
@@ -279,7 +279,7 @@ int main(void)
   /**************************************************
   **************************************************
   *
-  *       OV2640:
+  *       OV2640 Initialization:
   *
   **************************************************
   *************************************************/
@@ -301,7 +301,7 @@ int main(void)
   HAL_Delay(5000);
 
   memset(frameBuffer, 0, sizeof frameBuffer);
-  OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes);
+  OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes);//scatto foto
 
   //Una volta scattata la foto e salvato l'array di dati nel frameBuffer, si cerca l'inizio e la fine della foto in modo da
   //sapere la grandezza dell'immagine
@@ -1021,6 +1021,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
 
