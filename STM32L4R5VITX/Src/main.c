@@ -23,7 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdarg.h>
 #include "ov2640.h"
-#include "rfm95.h" //inclusio e librerie
+#include "rfm95.h" 
 #include <string.h>
 #include "secconfig.h"
 #include <stdio.h>
@@ -48,17 +48,11 @@
 /* Private variables ---------------------------------------------------------*/
 DCMI_HandleTypeDef hdcmi;
 DMA_HandleTypeDef hdma_dcmi;
-
 I2C_HandleTypeDef hi2c2;
-
 LPTIM_HandleTypeDef hlptim1;
-
 RNG_HandleTypeDef hrng;
-
 RTC_HandleTypeDef hrtc;
-
 SPI_HandleTypeDef hspi1;
-
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart3_tx;
 
@@ -1027,5 +1021,6 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
