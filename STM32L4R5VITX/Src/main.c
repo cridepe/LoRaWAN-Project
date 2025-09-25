@@ -299,7 +299,7 @@ int main(void)
   HAL_Delay(5000);
 
   memset(frameBuffer, 0, sizeof frameBuffer);
-  OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes);//scatto foto
+  OV2640_CaptureSnapshot((uint32_t)frameBuffer, imgRes); //scatto foto
 
   //Una volta scattata la foto e salvato l'array di dati nel frameBuffer, si cerca l'inizio e la fine della foto in modo da
   //sapere la grandezza dell'immagine
@@ -1019,6 +1019,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
 
