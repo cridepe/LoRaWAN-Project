@@ -64,8 +64,6 @@ rfm95_handle_t rfm95_handle = {0};    // This structure will be used to manage a
 volatile uint32_t lptim_tick_msb = 0; // Track the LPTIM msb --> Remember to clear this variable beofre initializing the LPTIM
 uint32_t lse_clk = (1<<15);           // defines the LSE clock speed (in Hz)
 uint16_t rfm95_status;                // handle rfm95 status to process rfm outcomes
-volatile uint8_t SleepMode_Activated = 0;
-volatile uint8_t EnterSleepFlag = 0;
 
 uint8_t packet[PACKET_SIZE];
 size_t current_packet_size;
@@ -1021,6 +1019,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
 
