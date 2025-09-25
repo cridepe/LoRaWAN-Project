@@ -58,7 +58,6 @@ DMA_HandleTypeDef hdma_usart3_tx;
 
 /* USER CODE BEGIN PV */
 #define PACKET_SIZE 220 //Puoi cambiare la dimensione del pacchetto
-bool uplink = false;  //booleano controllo trasmissione
 
 rfm95_handle_t rfm95_handle = {0};    // This structure will be used to manage all the configurations for the RFM
 volatile uint32_t lptim_tick_msb = 0; // Track the LPTIM msb --> Remember to clear this variable beofre initializing the LPTIM
@@ -1018,6 +1017,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
 
