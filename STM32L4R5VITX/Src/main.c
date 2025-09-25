@@ -337,7 +337,6 @@ int main(void)
   #endif
 
   //HAL_UART_Transmit_DMA(&huart3, frameBuffer, bufferPointer); //Use of DMA may be necessary for larger data streams.
-  send_array_in_packets(frameBuffer, sizeof(frameBuffer), PACKET_SIZE);
   send_array_in_packets(frameBuffer, bufferPointer, PACKET_SIZE);
   printf("About to enter the STANDBY MODE\r\n");
   printf("STANDBY MODE\r\n");
@@ -1019,6 +1018,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
 
 
 
