@@ -55,6 +55,10 @@ Node-RED ci servirà per ricevere i pacchetti di dati che arrivano su TTN, unirl
 
 Per impostare la Nucleo-L207 per usare la fotocamera abbiamo seguito questa pagina https://github.com/SimpleMethod/STM32-OV2640?tab=readme-ov-file e usato la sua libreria ov2640.c, con l'aggiunta di qualche impostazione tra cui il pin GPIO del reset della camera con output level impostato HIGH così come il PWDN. Inoltre va impostata la maximum output speed dei pin DCMI su HIGH.
 
+### Sensori
+Radar: RCWL0512
+PIR: HCSR 501
+
 
 
 
