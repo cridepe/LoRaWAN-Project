@@ -11,7 +11,7 @@ Le parti che verranno trattate in questo progetto sono:
 
 ## Programmazione su STM32CubeIDE
 
-Per scrivere i codici sono state usate varie nucleo tra cui la Nucleo-L476 e la Nucleo-F207, l'ideale sarebbe di utilizzare la Nucleo-F407 per realizzare il programma finale.
+Per scrivere i codici sono state usate varie nucleo tra cui la Nucleo-L476 e la Nucleo-F207.
 
 ### Invio Pacchetti con LoRaWAN
 
